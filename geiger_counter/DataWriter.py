@@ -10,9 +10,14 @@ import serial
 from datetime import datetime
 import atexit
 
+#Port used for the Arduino (check with Arduino IDE/Command Line)
 port = "/dev/cu.usbmodem101"
-notes = "rate_test"
-file_name = "count_vs_time_%s_%s.txt" % (str(datetime.now()), notes)
+#Notes added to the file name, change as needed
+notes = "Sr90_aluminum_3"
+file_name = ("count_times_%s_%s.txt" % (str(datetime.now()).replace(":", ""), notes))
+
+#Measurement period in seconds
+period = 180
 
 def exit_handler():
     ser.flush()
@@ -22,7 +27,9 @@ atexit.register(exit_handler)
 with open(file_name, "w") as output_file:
     ser = serial.Serial(port, 9600)
     while True:
-        time = int.from_bytes(ser.read_until(size=4), "little") / 1000000.0
-        #time = ser.readline().decode("utf-8")
+        time = int.from_bytes(ser.read(size=4), "little") / 1000000.0
         output_file.write(str(time) + "\n")
         print(time)
+        if time > period:
+            break
+        ser.flush()

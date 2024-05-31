@@ -1,6 +1,8 @@
 #include <LiquidCrystal.h>
 
+//Size*Period is the sampling window, change as needed
 const int size = 20;
+//Period is how often the display updates, change as needed
 const int period = 100;
 int i = 0;
 volatile long current;
@@ -12,7 +14,8 @@ const long t0 = micros();
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(2), increment, FALLING);
+  //Connect pulse output of counter to the pin with the interrupt (will likely want either 2 or 3)
+  attachInterrupt(digitalPinToInterrupt(2), increment, RISING);
 
   lcd.begin(16, 2);
   lcd.print("CountsPerMinute:");
@@ -58,5 +61,5 @@ void increment() {
   unsigned long t = (micros() - t0);
   byte buf[4] = {t & 0xFF , (t >> 8) & 0xFF, (t >> 16) & 0xFF, (t >> 24) & 0xFF};
   Serial.write(buf, 4);
-  //Serial.println((micros() - t0));
+  //Serial.println(t);
 }

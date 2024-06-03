@@ -13,7 +13,7 @@ import atexit
 #Port used for the Arduino (check with Arduino IDE/Command Line)
 port = "/dev/cu.usbmodem101"
 #Notes added to the file name, change as needed
-notes = "Sr90_aluminum_3"
+notes = "Sr90_10cm_425V"
 file_name = ("count_times_%s_%s.txt" % (str(datetime.now()).replace(":", ""), notes))
 
 #Measurement period in seconds

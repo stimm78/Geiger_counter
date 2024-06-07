@@ -12,12 +12,12 @@
 * [Experiments](https://github.com/stimm78/Geiger_counter#experiments)
 * [Acknowledgements](https://github.com/stimm78/Geiger_counter#acknowledgements)
 
-## Motivation
+## Motivation <a name="motivation"></a>
 The radiation we are observing is ionizing radiation, carriers of enough energy to ionize many common materials. The lower bound for this energy is considered to be about 10 eV, which encompasses alpha particles (He nuclei), beta particles (electrons), and gamma rays (photons). These subatomic particles are not visible to the naked eye; to verify their existence and our physical models of their behavior, it is necessary to build specialized nuclear detector devices such as our geiger counter.
 
  In particular, our group was interested in testing the drop-off of the intensity of nuclear radiation with distance and with material thickness. We expect that the radiation emitted from our sources are isotropic, so the intensity is expected to drop off as $1/r^2$, where r is the distance from the source. By modeling the attenuation of radiation as being attributed to random scattering/absorption by the atoms of an attenuating material, we should also expect the intensity of ionizing radiation should drop off exponentially as $I = I_0e^{(\mu/\rho)\rho t}$.
 
-## Theory
+## Theory 
 ![alt text](images/geiger_diagram.png)
 
 A GM counter is a nuclear detector which is capable of detecting alpha particles, beta particles, and gamma radiation. To detect these ionizing particles, the geiger counter is specially designed to amplify the electrical discharge from one ionized atom and read this discharge as a voltage drop across a resistor.
@@ -42,6 +42,8 @@ smooths out voltage pulses and produces a voltage that is proportional to the co
 
 We assembled these components onto a PCB that was designed and made available by [MIT](https://ocw.mit.edu/courses/22-s902-do-it-yourself-diy-geiger-counters-january-iap-2015/pages/labs/), with modifications to the HV supply in order to achieve the desired boost voltage. It turns out that the components around the HV booster designed by MIT do not work with the TL5001 chip, and we had to modify several components around the HV supply. We changed the resistors in the diagram to the following values: R8 = 500 KOhm, R7 = 460 KOhm, R4 = 10KOhm; Potentiometer: 10KOhm; R3 = 6.4 MOhm. This gave a range of voltage values across the GM tube from 320V to 480V, which we could tune using the potentiometer. The GM tube we used is the SBM-20 GM tube, which has an operating voltage range of 375-475 Volts.
 
+![alt text](images/physical_pcb.jpg)
+
 ### Counting Rate
 
 ### 3D Printed Case
@@ -61,9 +63,11 @@ As shown in the plot, the tube efficiency did not vary too much based on the vol
 ## Experiments
 ### Radioactive Sources
 <!-- Insert Co60 and Sr90 decay equations -->
+<!-- Insert Co60 and Sr90 decay equations -->
+
 We tested our Geiger counter using two radioactive sources: Co60 and Sr90. As shown in the equation, Co60 emits beta and gamma radiation while Sr90 emits only beta radiation.
 
 ### Experimental Method
 ### Results
 ## Acknowledgements
-This project was made for Phys CS 15C lab class at UCSB. Contributors are Deven Tseng, Aditya Chezhiyan, and Brian Chang. 
+This project was made for Phys CS 15C lab at UCSB. Contributors are Deven Tseng, Aditya Chezhiyan, and Brian Chang. 

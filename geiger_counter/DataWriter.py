@@ -14,7 +14,7 @@ import numpy as np
 #Port used for the Arduino (check with Arduino IDE/Command Line)
 port = "/dev/cu.usbmodem101"
 #Notes added to the file name, change as needed
-notes = "new_data_test"
+notes = "mightyohm_Co_60_lead_3"
 file_name = ("count_times_%s_%s.txt" % (str(datetime.now()).replace(":", ""), notes))
 
 #Returns counts rate (per second) and its error
@@ -31,9 +31,10 @@ total = 0
 ser = serial.Serial(port, 9600)
 while True:
     time = int.from_bytes(ser.read(size=4), "little") / 1000000.0
-    deltas.append(time)
-    print(time)
-    total += time
+    if time > 0.0015 and time < period:
+        deltas.append(time)
+        print(time)
+        total += time
     if total > period:
         break
     ser.flush()

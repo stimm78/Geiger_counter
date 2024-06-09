@@ -1,8 +1,8 @@
 # Geiger Counter
 
- A Geiger counter is a practical electronic device used to measure ionizing radiation, and it is widely used in experimental physics and nuclear industries. Our goal for this project was to build a custom Geiger counter to measure the count rate of radioactive sources. After building the Geiger counter, we characterized various parameters of our device such as the dead time and tube efficiency. Using our completed device, we measured and compared the attenuation coefficients of various materials for beta and gamma radiation from Co60 and Sr90. 
+ A Geiger counter is a practical electronic device used to measure ionizing radiation, and it is widely used in experimental physics and nuclear industries. Our goal for this project was to build a custom Geiger counter to measure the count rate of radioactive sources. After building the Geiger counter, we characterized various parameters of our device such as the dead time and tube efficiency. Using our device, we measured and compared the count rates of Co60 and Sr90 with attenuating materials placed in between the device and the radioactive source. 
 
-  ![alt test](https://github.com/stimm78/Geiger_counter/geiger_counter/Plots/Co60Distance.png)
+  <!-- ![alt test](INSERT FINAL PRODUCT IMAGE HERE) -->
   
   ## Table of Contents
 * [Motivation](https://github.com/stimm78/Geiger_counter#motivation)
@@ -12,12 +12,14 @@
 * [Experiments](https://github.com/stimm78/Geiger_counter#experiments)
 * [Acknowledgements](https://github.com/stimm78/Geiger_counter#acknowledgements)
 
-## Motivation <a name="motivation"></a>
+## Motivation
 The radiation we are observing is ionizing radiation, carriers of enough energy to ionize many common materials. The lower bound for this energy is considered to be about 10 eV, which encompasses alpha particles (He nuclei), beta particles (electrons), and gamma rays (photons). These subatomic particles are not visible to the naked eye; to verify their existence and our physical models of their behavior, it is necessary to build specialized nuclear detector devices such as our geiger counter.
 
- In particular, our group was interested in testing the drop-off of the intensity of nuclear radiation with distance and with material thickness. We expect that the radiation emitted from our sources are isotropic, so the intensity is expected to drop off as $1/r^2$, where r is the distance from the source. By modeling the attenuation of radiation as being attributed to random scattering/absorption by the atoms of an attenuating material, we should also expect the intensity of ionizing radiation should drop off exponentially as $I = I_0e^{(\mu/\rho)\rho t}$.
+ In particular, our group was interested in testing the drop-off of the intensity of nuclear radiation with distance and with material thickness. We expect that the radiation emitted from our sources are isotropic, so the intensity is expected to drop off as $1/r^2$, where r is the distance from the source. By modeling the attenuation of radiation as being attributed to random scattering/absorption by the atoms of an attenuating material, we should also expect the intensity of ionizing radiation should drop off exponentially as $I = I_0e^{\mu t}$, where $I_0$ is the initial intensity of the radiation,  is the linear attenuation coefficient of our material, and t is the thickness of our material.
 
 ## Theory 
+
+### Geiger Muller Tube
 ![alt text](images/geiger_diagram.png)
 
 A GM counter is a nuclear detector which is capable of detecting alpha particles, beta particles, and gamma radiation. To detect these ionizing particles, the geiger counter is specially designed to amplify the electrical discharge from one ionized atom and read this discharge as a voltage drop across a resistor.
@@ -29,8 +31,23 @@ When ionizing radiation triggers the avalanche effect, the tube is temporarily u
 
 Some ionizing radiation will pass through the tube without ionizing any atoms, adding further uncertainty to our measurement of the radiation intensity. The ratio between the measured count rate from the geiger counter and the true one calculated from the activity level of our source is called the tube efficiency. This metric should be as high as possible to improve the reliability of our measurement.
 
+Inverse Square Law Dropoff with Distance
+If we model our radiation sources as emitting ionizing radiation isotropically, then necessarily the radiation emitted per second per steradians should be constant. Call this quantity I0. The area that some solid angle $\Omega$ consumes at a distance r is $\Omega r^2$; thus, the radiation emitted per second per unit area $I(r)$ is related to $I_0$ by
+
+$$I(r)\Omega r^2 = I_0 \to I(r)=I_0/(r^2)$$
+
+Thus, we should expect an inverse square law drop off in radiation intensity as we get further from a radioactive source.
+
+Exponential Attenuation
+Suppose that some $N(x)$ radioactive particles scatter off of the atoms within some infinitesimal thickness $dx$ with probability $\mu dx$, modeling the scattering cross section of the atoms within this slice of material. Then the number of radioactive particles remaining after scattering off of our slice of material is
+
+$dN = -Ndx$, so then calling $N(0) = N_0$ and solving for $N(x)$
+$$dN/N= -\mu dx \to ln(N/N_0)=-\mu x \to N(x)=N_0e^{-\mu x}$$
+Thus, if our attenuating material is t long, then the number of radioactive particles that remain after passing through our material is
+N = N0e-t, which naturally implies that I = I0e-t
+
 ## Design
-### List of Components
+### [Parts List](https://docs.google.com/spreadsheets/d/1FQi-imXlj1l_IscpUjg6qlx7No3eN8g5/edit?usp=sharing&ouid=113398199388474590846&rtpof=true&sd=true)
 
 ### Circuit Diagram
 ![alt text](images/circuit.png)
@@ -45,29 +62,55 @@ We assembled these components onto a PCB that was designed and made available by
 ![alt text](images/physical_pcb.jpg)
 
 ### Counting Rate
+To display the counting rate, we used an LCD connected to the Arduino. The Arduino calculates the displayed rate by taking the average of the inverse time between the latest 20 counts, removing a count from consideration after every update period without a change. This allows the count rate to respond effectively to changes, though it will considerably overestimate should there be an unlikely small gap between two counts.
+
 
 ### 3D Printed Case
-
+We 3D printed a case to contain and mount the parts of our counter. It is composed of three parts: the base, with inserts for the PCB, Arduino, battery holder, and GM tube clips; the outer case, with the outer face of the GM tube window approximately one inch away from the GM tube; and the lid, with an insert for the display.
 
 ## Device Characterization
 To verify the effectiveness of our measurements, we characterized our geiger counter by measuring its tube efficiency and dead time.
 ### Dead Time
-In order to measure the dead time of the GM tube, we placed a source of Sr90 as close to the tube as possible (approximately 1 mm). We then connected the PCB to the oscilloscope and measured the smallest time between pulses. The dead time of the GM tube at 400V was measured to be around 500 microseconds, which is close to the stated dead time of 190 microseconds on the [SBM20 data sheet](https://www.gstube.com/data/2398/).
+In order to measure the dead time of the GM tube, we placed a source of Sr90 as close to the tube as possible (approximately 1 mm). We then connected the PCB to the oscilloscope and measured the smallest time between pulses. The dead time of the GM tube at 400V was measured to be approximately 500 microseconds, which is reasonable given the minimum dead time of 190 microseconds according to the [SBM20 data sheet](https://www.gstube.com/data/2398/).
+The effective dead time of the counter is larger due to the pulse stretcher; the oscilloscope gave a time of about 1.76 milliseconds.
 
 ### Tube Efficiency
-The PCB has a potentiometer to tune the voltage across the GM tube. Although the data sheet says that the tube has an operating voltage range of 350-475 volts, we wanted to determine the optimal voltage to maximize tube efficiency. To find the tube efficiency, we calculated the expected count rate of Sr90 using its labeled true activity and its solid angle relative to the tube. For Sr90, the expected count rate turned out to be approximately 20.4 counts/second.
+The PCB has a potentiometer to tune the voltage across the GM tube. Although the data sheet says that the tube has an operating voltage range of 350-475 volts, we wanted to determine the optimal voltage to maximize tube efficiency. To find the tube efficiency, we calculated the expected count rate of Sr90 using its labeled true activity and its solid angle relative to the tube. For Sr90, the expected count rate turned out to be approximately 20.4 counts/second when placed 10 cm away from the tube.
 
-<!-- Insert tube efficiency vs voltage graph -->
+![alt text](geiger_counter/Plots/TubeEfficiency.png)
 
 As shown in the plot, the tube efficiency did not vary too much based on the voltage. The range of efficiencies went from 0.738 to 0.770, with the “optimal” voltage near 375V.
 ## Experiments
 ### Radioactive Sources
-<!-- Insert Co60 and Sr90 decay equations -->
-<!-- Insert Co60 and Sr90 decay equations -->
+<sup>59</sup>Co + n &rarr; <sup>60</sup><sub>27</sub>Co &rarr; <sup>60</sup><sub>28</sub>Ni + e<sup>-</sup> + 2 $\gamma$
 
-We tested our Geiger counter using two radioactive sources: Co60 and Sr90. As shown in the equation, Co60 emits beta and gamma radiation while Sr90 emits only beta radiation.
+<sup>90</sup><sub>38</sub>Sr &rarr; <sup>90</sup><sub>39</sub>Sr + e<sup>-</sup> + $\nu$<sub>e</sub>
+
+We tested our Geiger counter using two radioactive sources: Co60 and Sr90. As shown in the equations, Co60 emits beta and gamma radiation while Sr90 emits only beta radiation.
 
 ### Experimental Method
-### Results
+![alt text](images/Experiment_Setup_1.png)
+
+Unlike the display rate, the rate calculated from a measurement acquisition assumes none of the factors affecting count rate change over the measurement period, allowing estimation of the count rate for that specific environment. The measured values are the differences in time between when counts are read, which are obtained through the Arduino’s serial communication. Since we expect that radioactive decays occur randomly and independently (at least for a small measurement period relative to the half-life), the time between counts t should follow an exponential distribution, with probability density f(t)=re-rt, where r is the count rate we wish to obtain. We used a maximum likelihood estimation (MLE) with this distribution to calculate r, which finds the value of r for which the probability of getting the measured data set is maximized. Provided the data does indeed follow this exponential distribution, the calculated rate will be close to the average rate predicted by the data set.
+By varying factors like distance and shielding between these measurements, we can characterize the effect these factors have on the count rate. It is critical to subtract the background rate from the resulting rates in order to isolate the effect of the independently varied factors.
+
+![alt text](images/Experiment_Setup_2.jpg)
+### Distance Tests
+![alt text](geiger_counter/Plots/Co60Distance.png)
+![alt text](geiger_counter/Plots/Sr90Distance.png)
+
+To test the inverse square law drop off of intensity with distance, we measured the counts per second from a Cobalt-60 source and Strontium-90, varying the distance from 5 cm to 50 cm. At a distance of 5 cm, the counts from the Strontium source were rapid enough to exceed the counter’s dead time, resulting in inaccurate measurements. The plots below fit to power laws close to 1/r2, providing strong validation for our theory.
+
+### Shielding Tests
+#### Beta Shielding
+| Material | Sr90 Count Rate (cps)| Co60 Count Rate (cps)|
+| :---------------- | :------: | ----: |
+| None | 14.06 | 1.53 |
+| Lead (1.21 mm) | 0 | 1.72 |
+| Lead (3.23 mm) |  0  | 1.39 |
+| Plexiglass (12.7 mm) | 0 | 1.38 |
+
+Radiation shielding does not necessarily indiscriminately block all radiation, as illustrated by some of the materials above. Though Strontium-90 gives a much higher count rate in the absence of shielding, the Geiger counter’s measurement drops too close to the background rate when the source is shielded by lead or plexiglass. This is not the case for the Cobalt-60 source, implying that its radiation has some property the Strontium-90’s does not. This is indeed the case: Cobalt-60 also produces gamma rays, which are much harder to attenuate given their higher energy and lack of charge.
+
 ## Acknowledgements
 This project was made for Phys CS 15C lab at UCSB. Contributors are Deven Tseng, Aditya Chezhiyan, and Brian Chang. 

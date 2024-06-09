@@ -4,11 +4,12 @@
 const int period = 1000;
 //Number of events considered
 const int size = 20;
-float rates[size];
+float times[size];
+float currentSize = 0;
 int i = 0;
-float cps = 0;
-float rNew;
-bool isLong = false;
+float tot = 0;
+float tNew = 0;
+String out = "";
 LiquidCrystal lcd(12, 11, 6, 5, 4, 3);
 unsigned long t0 = micros();
 
@@ -21,28 +22,33 @@ void setup() {
   lcd.begin(16, 2);
   lcd.print("CountsPerSecond:");
   lcd.setCursor(0, 1);
-  lcd.print(cps / size);
+  lcd.print("0.00");
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   delay(period);
-  if(isLong) {
-    cps -= rates[i];
-    if(cps <= 0) {
-      cps = 0;
+  if (tot > 0 && currentSize > 0) {
+    if((micros() - t0) / 1000000.0 > 2 * tot / currentSize) {
+      tot -= times[i];
+      times[i] = 0;
+      currentSize--;
+      if (currentSize <= 0) {
+        currentSize = 0;
+      }
     }
-    rates[i] = 0;
-    i = (i+ 1) % size;
-    isLong = false;
   }
-  String out = String(cps / size);
+  if(tot > 0) {
+    out = String(currentSize / tot);
+  }
+  else {
+    out = "0.00";
+  }
   for(int i = out.length(); i <= 16; i++){
     out += " ";
   }
   lcd.setCursor(0, 1);
   lcd.print(out);
-  isLong = true;
 }
 
 void increment() {
@@ -51,12 +57,12 @@ void increment() {
   t0 = e;
   byte buf[4] = {t & 0xFF , (t >> 8) & 0xFF, (t >> 16) & 0xFF, (t >> 24) & 0xFF};
   Serial.write(buf, 4);
-  rNew = 1000000.0 / t;
-  cps += rNew - rates[i];
-  if(cps <= 0) {
-      cps = 0;
-    }
-  rates[i] = rNew;
+  tNew = t / 1000000.0;
+  tot += tNew - times[i];
+  times[i] = tNew;
   i = (i + 1) % size;
-  isLong = false;
+  currentSize++;
+  if (currentSize >= size) {
+    currentSize = size;
+  }
 }

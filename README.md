@@ -44,7 +44,7 @@ Suppose that some $N(x)$ radioactive particles scatter off of the atoms within s
 $dN = -Ndx$, so then calling $N(0) = N_0$ and solving for $N(x)$
 $$dN/N= -\mu dx \to ln(N/N_0)=-\mu x \to N(x)=N_0e^{-\mu x}$$
 Thus, if our attenuating material is t long, then the number of radioactive particles that remain after passing through our material is
-N = N0e-t, which naturally implies that I = I0e-t
+$N = N_0e^{-t}$, which naturally implies that $I = I_0e^{-t}$
 
 ## Design
 ### [Parts List](https://docs.google.com/spreadsheets/d/1FQi-imXlj1l_IscpUjg6qlx7No3eN8g5/edit?usp=sharing&ouid=113398199388474590846&rtpof=true&sd=true)

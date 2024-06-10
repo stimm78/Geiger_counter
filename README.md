@@ -2,7 +2,7 @@
 
  A Geiger counter is a practical electronic device used to measure ionizing radiation, and it is widely used in experimental physics and nuclear industries. Our goal for this project was to build a custom Geiger counter to measure the count rate of radioactive sources. After building the Geiger counter, we characterized various parameters of our device such as the dead time and tube efficiency. Using our device, we measured and compared the count rates of Co60 and Sr90 with attenuating materials placed in between the device and the radioactive source. 
 
-  <!-- ![alt test](INSERT FINAL PRODUCT IMAGE HERE) -->
+  ![alt test](images/lcd_display.jpg)
   
   ## Table of Contents
 * [Motivation](https://github.com/stimm78/Geiger_counter#motivation)
@@ -68,6 +68,11 @@ To display the counting rate, we used an LCD connected to the Arduino. The Ardui
 ### 3D Printed Case
 We 3D printed a case to contain and mount the parts of our counter. It is composed of three parts: the base, with inserts for the PCB, Arduino, battery holder, and GM tube clips; the outer case, with the outer face of the GM tube window approximately one inch away from the GM tube; and the lid, with an insert for the display.
 
+![alt text](images/tube_in_case.jpg)
+
+![alt text](images/power_lcd.jpg)
+
+![alt text](images/geiger_inside_case.jpg)
 ## Device Characterization
 To verify the effectiveness of our measurements, we characterized our geiger counter by measuring its tube efficiency and dead time.
 ### Dead Time

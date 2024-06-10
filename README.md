@@ -2,7 +2,7 @@
 
  A Geiger counter is a practical electronic device used to measure ionizing radiation, and it is widely used in experimental physics and nuclear industries. Our goal for this project was to build a custom Geiger counter to measure the count rate of radioactive sources. After building the Geiger counter, we characterized various parameters of our device such as the dead time and tube efficiency. Using our device, we measured and compared the count rates of Co60 and Sr90 with attenuating materials placed in between the device and the radioactive source. 
 
-  ![alt test](images/lcd_display.jpg)
+![alt test](images/lcd_display.jpg)
   
   ## Table of Contents
 * [Motivation](https://github.com/stimm78/Geiger_counter#motivation)

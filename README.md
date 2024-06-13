@@ -62,7 +62,7 @@ We assembled these components onto a PCB that was designed and made available by
 ![alt text](images/physical_pcb.jpg)
 
 ### Counting Rate
-To display the counting rate, we used an LCD connected to the Arduino. The Arduino calculates the displayed rate by taking the average of the inverse time between the latest 20 counts, removing a count from consideration after every update period without a change. This allows the count rate to respond effectively to changes, though it will considerably overestimate should there be an unlikely small gap between two counts.
+The expected count rate is the inverse of the average time between counts (these times follow an exponential distribution; see Experimental Method). We used an Arduino UNO to calculate the difference in times between counts and determine the displayed rate. The rate considers the 20 latest counts, allowing it to update to any changes in its surroundings. To compensate for any sharp decrease in count, the rate removes the oldest count from consideration after twice the average of the considered times (for the exponential distribution, this time is equal to the average time plus one standard deviation). To display the counting rate, we used an LCD connected to the Arduino.
 
 
 ### 3D Printed Case
@@ -96,7 +96,7 @@ We tested our Geiger counter using two radioactive sources: Co60 and Sr90. As sh
 ### Experimental Method
 ![alt text](images/Experiment_Setup_1.png)
 
-Unlike the display rate, the rate calculated from a measurement acquisition assumes none of the factors affecting count rate change over the measurement period, allowing estimation of the count rate for that specific environment. The measured values are the differences in time between when counts are read, which are obtained through the Arduino’s serial communication. Since we expect that radioactive decays occur randomly and independently (at least for a small measurement period relative to the half-life), the time between counts t should follow an exponential distribution, with probability density f(t)=re-rt, where r is the count rate we wish to obtain. We used a maximum likelihood estimation (MLE) with this distribution to calculate r, which finds the value of r for which the probability of getting the measured data set is maximized. Provided the data does indeed follow this exponential distribution, the calculated rate will be close to the average rate predicted by the data set.
+Unlike the display rate, the rate calculated from a measurement acquisition assumes none of the factors affecting count rate change over the measurement period, allowing estimation of the count rate for that specific environment. The measured values are the differences in time between when counts are read, which are obtained through the Arduino’s serial communication. Since we expect that radioactive decays occur randomly and independently (at least for a small measurement period relative to the half-life), the time between counts $t$ should follow an exponential distribution, with probability density $f(t)=re^{-rt}$, where $r$ is the count rate we wish to obtain. We used a maximum likelihood estimation (MLE) with this distribution to calculate $r$, which finds the value of $r$ for which the probability of getting the measured data set is maximized. Provided the data does indeed follow this exponential distribution, the calculated rate will be close to the average rate predicted by the data set.
 By varying factors like distance and shielding between these measurements, we can characterize the effect these factors have on the count rate. It is critical to subtract the background rate from the resulting rates in order to isolate the effect of the independently varied factors.
 
 ![alt text](images/Experiment_Setup_2.jpg)
@@ -104,18 +104,18 @@ By varying factors like distance and shielding between these measurements, we ca
 ![alt text](geiger_counter/Plots/Co60Distance.png)
 ![alt text](geiger_counter/Plots/Sr90Distance.png)
 
-To test the inverse square law drop off of intensity with distance, we measured the counts per second from a Cobalt-60 source and Strontium-90, varying the distance from 5 cm to 50 cm. At a distance of 5 cm, the counts from the Strontium source were rapid enough to exceed the counter’s dead time, resulting in inaccurate measurements. The plots below fit to power laws close to 1/r2, providing strong validation for our theory.
+To test the inverse square law drop off of intensity with distance, we measured the counts per second from a Cobalt-60 source and Strontium-90, varying the distance from 5 cm to 50 cm. At a distance of 5 cm, the counts from the Strontium source were rapid enough to exceed the counter’s dead time, resulting in inaccurate measurements. The plots below fit to power laws close to $1/r^2$, providing strong validation for our theory.
 
 ### Shielding Tests
 #### Beta Shielding
 | Material | Sr90 Count Rate (cps)| Co60 Count Rate (cps)|
 | :---------------- | :------: | ----: |
 | None | 14.06 | 1.53 |
-| Lead (1.21 mm) | 0 | 1.72 |
-| Lead (3.23 mm) |  0  | 1.39 |
-| Plexiglass (12.7 mm) | 0 | 1.38 |
+| Lead (1.21 mm) | $\approx$ 0 | 1.72 |
+| Lead (3.23 mm) |  $\approx$ 0  | 1.39 |
+| Plexiglass (12.7 mm) | $\approx$ 0 | 1.38 |
 
-Radiation shielding does not necessarily indiscriminately block all radiation, as illustrated by some of the materials above. Though Strontium-90 gives a much higher count rate in the absence of shielding, the Geiger counter’s measurement drops too close to the background rate when the source is shielded by lead or plexiglass. This is not the case for the Cobalt-60 source, implying that its radiation has some property the Strontium-90’s does not. This is indeed the case: Cobalt-60 also produces gamma rays, which are much harder to attenuate given their higher energy and lack of charge.
+Radiation shielding does not necessarily indiscriminately block all radiation, as illustrated by some of the materials above. Though Strontium-90 gives a much higher count rate in the absence of shielding, the Geiger counter’s measurement drops to close to the background rate when the source is shielded by lead or plexiglass. This is not the case for the Cobalt-60 source, implying that its radiation has some property the Strontium-90’s does not. This is indeed the case: Cobalt-60 also produces gamma rays, which are much harder to attenuate given their higher energy and lack of charge.
 
 ## Acknowledgements
 This project was made for Phys CS 15C lab at UCSB. Contributors are Deven Tseng, Aditya Chezhiyan, and Brian Chang. 
